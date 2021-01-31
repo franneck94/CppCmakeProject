@@ -45,28 +45,28 @@ conan_basic_setup()
 # Add external libraries
 find_package(Git QUIET)
 
-if(GIT_FOUND AND EXISTS ${PROJECT_SOURCE_DIR}/.git)
+if(GIT_FOUND AND EXISTS .git)
     message(STATUS "Submodule update")
     execute_process(COMMAND ${GIT_EXECUTABLE} submodule update --init --recursive
                     WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
                     RESULT_VARIABLE GIT_SUBMOD_RESULT)
 endif()
 
-add_subdirectory(${PROJECT_SOURCE_DIR}/external/)
+add_subdirectory(external)
 
 # Add first-party libraries
-add_subdirectory(${PROJECT_SOURCE_DIR}/src/)
+add_subdirectory(src)
 
 # Add executables
-add_subdirectory(${PROJECT_SOURCE_DIR}/app/)
+add_subdirectory(app)
 
 # Add unit tests
 if (ENABLE_TESTING OR ENABLE_COVERAGE)
     enable_testing()
-    add_subdirectory(${PROJECT_SOURCE_DIR}/tests/)
+    add_subdirectory(tests)
 endif()
 
 # Add benchmarks
 if (ENABLE_BENCHMARKING)
-    add_subdirectory(${PROJECT_SOURCE_DIR}/benchmarks/)
+    add_subdirectory(benchmarks)
 endif()
