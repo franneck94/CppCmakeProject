@@ -10,9 +10,10 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS        OFF)
 
 # Options
-option(ENABLE_TESTING       "Enable a Unit Testing buid."   ON)
-option(ENABLE_COVERAGE      "Enable a Code Coverage buid."  OFF)
-option(ENABLE_BENCHMARKS    "Enable a Code Coverage buid."  ON)
+option(ENABLE_WARNINGS      "Enable to add warnings to a target."   ON)
+option(ENABLE_TESTING       "Enable a Unit Testing buid."           ON)
+option(ENABLE_COVERAGE      "Enable a Code Coverage buid."          OFF)
+option(ENABLE_BENCHMARKS    "Enable a Code Coverage buid."          ON)
 
 # Cmake modules
 set(CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/cmake/)
