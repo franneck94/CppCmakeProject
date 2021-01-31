@@ -16,46 +16,63 @@ option(ENABLE_BENCHMARKS    "Enable a Code Coverage buid."  ON)
 
 # Cmake modules
 set(CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/cmake/)
-include(Documentation)
-if (ENABLE_TESTING OR ENABLE_COVERAGE)
-    include(CTest)
-endif()
-if (ENABLE_COVERAGE)
-    if(CMAKE_CXX_COMPILER_ID MATCHES "GNU|Clang")
-        include(CodeCoverage)
-    else()
-        message("Coverage only for GNU|Clang")
-        set(ENABLE_COVERAGE OFF)
+include(ConfigSafeGuards)
+include(Warnings)
+if (CMAKE_PROJECT_NAME STREQUAL PROJECT_NAME)
+    include(Documentation)
+    if (ENABLE_TESTING OR ENABLE_COVERAGE)
+        include(CTest)
+    endif()
+    if (ENABLE_COVERAGE)
+        if(CMAKE_CXX_COMPILER_ID MATCHES "GNU|Clang")
+            include(CodeCoverage)
+        else()
+            message("Coverage only for GNU|Clang")
+            set(ENABLE_COVERAGE OFF)
+        endif()
     endif()
 endif()
 
 # Project/Library Names
-set(LIBRARY_NAME    "${PROJECT}_MyLib")
-set(MAIN            "${PROJECT}_Executable")
-set(TEST_MAIN       "${PROJECT}_unit_tests")
-set(COVERAGE_MAIN   "${PROJECT}_coverage")
-set(BENCHMARK_MAIN  "${PROJECT}_benchmarks")
+set(LIBRARY_NAME    ${PROJECT}_MyLib)
+set(MAIN            ${PROJECT}_Executable)
+set(TEST_MAIN       ${PROJECT}_unit_tests)
+set(COVERAGE_MAIN   ${PROJECT}_coverage)
+set(BENCHMARK_MAIN  ${PROJECT}_benchmarks)
 
 # Add conan libraries
 include(${CMAKE_BINARY_DIR}/conanbuildinfo.cmake)
 conan_basic_setup()
 
 # Add external libraries
-add_subdirectory("${PROJECT_SOURCE_DIR}/external/")
+find_package(Git QUIET)
+
+if(GIT_FOUND AND EXISTS ${PROJECT_SOURCE_DIR}/.git)
+    message(STATUS "Submodule update")
+    execute_process(COMMAND ${GIT_EXECUTABLE} submodule update --init --recursive
+                    WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
+                    RESULT_VARIABLE GIT_SUBMOD_RESULT)
+endif()
+
+add_subdirectory(${PROJECT_SOURCE_DIR}/external/)
 
 # Add first-party libraries
-add_subdirectory("${PROJECT_SOURCE_DIR}/src/")
+add_subdirectory(${PROJECT_SOURCE_DIR}/src/)
 
 # Add executables
-add_subdirectory("${PROJECT_SOURCE_DIR}/app/")
+add_subdirectory(${PROJECT_SOURCE_DIR}/app/)
 
 # Add unit tests
-if (ENABLE_TESTING OR ENABLE_COVERAGE)
-    enable_testing()
-    add_subdirectory("${PROJECT_SOURCE_DIR}/tests/")
+if (CMAKE_PROJECT_NAME STREQUAL PROJECT_NAME)
+    if (ENABLE_TESTING OR ENABLE_COVERAGE)
+        enable_testing()
+        add_subdirectory(tests)
+    endif()
 endif()
 
 # Add benchmarks
-if(ENABLE_BENCHMARKING)
-    add_subdirectory("${PROJECT_SOURCE_DIR}/benchmarks/")
+if (CMAKE_PROJECT_NAME STREQUAL PROJECT_NAME)
+    if (ENABLE_BENCHMARKING)
+        add_subdirectory(${PROJECT_SOURCE_DIR}/benchmarks/)
+    endif()
 endif()
