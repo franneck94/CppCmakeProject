@@ -63,7 +63,7 @@ add_subdirectory(${PROJECT_SOURCE_DIR}/app/)
 # Add unit tests
 if (ENABLE_TESTING OR ENABLE_COVERAGE)
     enable_testing()
-    add_subdirectory(tests)
+    add_subdirectory(${PROJECT_SOURCE_DIR}/tests/)
 endif()
 
 # Add benchmarks
