@@ -63,16 +63,12 @@ add_subdirectory(${PROJECT_SOURCE_DIR}/src/)
 add_subdirectory(${PROJECT_SOURCE_DIR}/app/)
 
 # Add unit tests
-if (CMAKE_PROJECT_NAME STREQUAL PROJECT_NAME)
-    if (ENABLE_TESTING OR ENABLE_COVERAGE)
-        enable_testing()
-        add_subdirectory(tests)
-    endif()
+if (ENABLE_TESTING OR ENABLE_COVERAGE)
+    enable_testing()
+    add_subdirectory(tests)
 endif()
 
 # Add benchmarks
-if (CMAKE_PROJECT_NAME STREQUAL PROJECT_NAME)
-    if (ENABLE_BENCHMARKING)
-        add_subdirectory(${PROJECT_SOURCE_DIR}/benchmarks/)
-    endif()
+if (ENABLE_BENCHMARKING)
+    add_subdirectory(${PROJECT_SOURCE_DIR}/benchmarks/)
 endif()
